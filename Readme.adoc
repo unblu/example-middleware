@@ -1,0 +1,14 @@
+= Test middleware
+
+This is a demo middleware designed to demonstrate the capabilities of the https://github.com/unblu/unblu-middleware-lib[unblu middleware library].
+
+It:
+
+- Automatically creates a bot registration
+- Automatically creates a webhook registration
+- Correctly handles all webhooks and pings (lib handles that)
+- Correctly handles all bot outbound requests and pings (lib handles that)
+- Accepts all visitor onboarding offers
+- Greets a visitor when the dialog is open
+- Echos all visitor messages
+- Logs all messages, not just in a bot dialog (the webhook handler is set up to do so)

@@ -1,0 +1,17 @@
+unblu:
+  host: ${UNBLU_HOST}
+  user: ${UNBLU_USER}
+  password: ${UNBLU_PASSWORD}
+  middleware:
+    url: ${MIDDLEWARE_URL}
+    name: Test middleware
+    autoSubscribe: true
+  bot:
+    secret: ${BOT_SECRET}
+    onboardingFilter: VISITORS
+    person:
+      firstName: Test
+      lastName: Bot
+      sourceId: Test middleware
+  webhook:
+    secret: ${WEBHOOK_SECRET}

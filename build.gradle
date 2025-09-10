@@ -1,0 +1,80 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.springframework.boot' version '3.4.4'
+    id 'io.spring.dependency-management' version '1.1.6'
+    id 'com.google.cloud.tools.jib' version '3.4.4'
+}
+
+mainClassName = 'com.unblu.middleware.test.App'
+group 'com.unblu'
+version '1.0.0-SNAPSHOT'
+
+wrapper {
+    gradleVersion = '8.13'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+wrapper {
+    distributionType = Wrapper.DistributionType.ALL
+    gradleVersion = '8.13'
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework:spring-messaging'
+    implementation 'io.micrometer:context-propagation'
+    implementation 'org.projectlombok:lombok:1.18.34'
+    implementation 'com.google.guava:guava:32.1.2-jre'
+    implementation 'com.unblu.middleware:unblu-middleware-lib:1.5.1'
+
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
+
+    implementation 'com.unblu.openapi:jersey3-client-v4:8.18.0'
+
+    compileOnly 'org.projectlombok:lombok:1.18.34'
+    annotationProcessor 'org.projectlombok:lombok:1.18.34'
+
+    // various
+    implementation 'commons-codec:commons-codec'
+    implementation 'io.projectreactor.addons:reactor-extra'
+
+    // (unit) testing
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'io.projectreactor:reactor-test'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    testAnnotationProcessor "org.projectlombok:lombok:1.18.34"
+}
+
+test {
+    // use this to see the output of tests (e.g. Spring dependency problems)
+    // testLogging.showStandardStreams = true
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+tasks.named('bootRun') {
+    if (project.hasProperty('spring.profiles.active')) {
+        systemProperties = ['spring.profiles.active': project.getProperty('spring.profiles.active')]
+    } else {
+        systemProperties = ['spring.profiles.active': 'dev'] // Set default to 'dev'
+    }
+}
+
+
