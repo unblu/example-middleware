@@ -42,7 +42,7 @@ public class TestMiddlewareService implements ApplicationRunner {
 
         // echo every message back to the user
         dialogBotService.onDialogMessage(r ->
-                Mono.fromRunnable(() -> echoIfSentByHuman(r)));
+                Mono.fromRunnable(() -> echoIfSentByVisitor(r)));
 
         // log every message sent anywhere using a webhook handler
         webhookHandlerService.onWebhook(eventName("conversation.new_message"), ConversationNewMessageEvent.class,
@@ -50,7 +50,7 @@ public class TestMiddlewareService implements ApplicationRunner {
                 canIgnoreOrder());
     }
 
-    private void echoIfSentByHuman(BotDialogMessageRequest r) {
+    private void echoIfSentByVisitor(BotDialogMessageRequest r) {
         if (r.getConversationMessage().getSenderPerson().getPersonType() == EPersonType.VISITOR) {
             sendMessage(r.getDialogToken(), "You wrote: " + r.getConversationMessage().getFallbackText());
         }

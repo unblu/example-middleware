@@ -12,3 +12,16 @@ It:
 - Greets a visitor when the dialog is open
 - Echos all visitor messages
 - Logs all messages, not just in a bot dialog (the webhook handler is set up to do so)
+
+== Get it running
+Adopt `application.yaml` or populate environment variables (e.g. in a .env file):
+
+[source,env]
+----
+UNBLU_HOST=https://some-installation.unblu.com
+UNBLU_USER=some-unblu-admin-user
+UNBLU_PASSWORD=hello-im-some-unblu-admin-user-password
+MIDDLEWARE_URL=https://where.my.middleware.is.running
+WEBHOOK_SECRET=a-very-secret-key
+BOT_SECRET=another-very-secret-key
+----
