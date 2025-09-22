@@ -5,8 +5,9 @@ unblu:
   middleware:
     url: ${MIDDLEWARE_URL}
     name: Test middleware
-  bot:
+  outbound-requests:
     secret: ${BOT_SECRET}
+  bot:
     onboardingFilter: VISITORS
     person:
       firstName: Test
