@@ -2,6 +2,7 @@ package com.unblu.middleware.test;
 
 import com.unblu.middleware.bots.annotation.UnbluBots;
 import com.unblu.middleware.bots.service.DialogBotService;
+import com.unblu.middleware.common.entity.ContextSpec;
 import com.unblu.middleware.webhooks.annotation.UnbluWebhooks;
 import com.unblu.middleware.webhooks.service.WebhookHandlerService;
 import com.unblu.webapi.jersey.v4.api.BotsApi;
@@ -34,20 +35,24 @@ public class TestMiddlewareService implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) {
         // accept every onboarding offer
-        dialogBotService.acceptOnboardingOfferIf(_o -> Mono.just(true));
+        dialogBotService.acceptOnboardingOfferIf(_o -> Mono.just(true)
+                        .doOnNext(_r -> log.info("Accepting as usual")));
 
         // greet the user when a dialog is opened
         dialogBotService.onDialogOpen(r ->
-                Mono.fromRunnable(() -> sendMessage(r.getDialogToken(), "Hello, I am a bot!")));
+                        Mono.fromRunnable(() -> sendMessage(r.getDialogToken(), "Hello, I am a bot!")));
 
         // echo every message back to the user
         dialogBotService.onDialogMessage(r ->
-                Mono.fromRunnable(() -> echoIfSentByVisitor(r)));
+                        Mono.fromRunnable(() -> echoIfSentByVisitor(r)));
 
         // log every message sent anywhere using a webhook handler
         webhookHandlerService.onWebhook(eventName("conversation.new_message"), ConversationNewMessageEvent.class,
                 e -> Mono.fromRunnable(() -> log.info("Message received: {}", e.getConversationMessage().getFallbackText())),
-                canIgnoreOrder());
+                canIgnoreOrder(),
+                ContextSpec.of(
+                        "conversationId", it -> it.getConversationMessage().getConversationId()
+                ));
     }
 
     private void echoIfSentByVisitor(BotDialogMessageRequest r) {
@@ -58,6 +63,7 @@ public class TestMiddlewareService implements ApplicationRunner {
 
     private void sendMessage(String dialogToken, String text) {
         try {
+            log.info("Sending message: {}", text);
             botsApi.botsSendDialogMessage(new BotDialogPostMessage()
                     .dialogToken(dialogToken)
                     .messageData(new TextPostMessageData().text(text)));
