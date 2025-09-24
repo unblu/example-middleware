@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <pattern>
+                    <pattern>{"message": "%message %ex","logger": "%logger","severity": "%level","level": "%level","deliveryId": "%X{deliveryId}","eventId": "%X{eventId}","conversationId": "%X{conversationId}","dialogToken": "%X{dialogToken}","thread": "%thread","@timestamp": "%date{\"yyyy-MM-dd'T'HH:mm:ss.SSS\", UTC}Z"}</pattern>
+                </pattern>
+            </providers>
+        </encoder>
+    </appender>
+
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+
+    <root level="info">
+        <springProfile name="production">
+            <appender-ref ref="STDOUT"/>
+        </springProfile>
+        <springProfile name="!production">
+            <appender-ref ref="CONSOLE"/>
+        </springProfile>
+    </root>
+</configuration>
