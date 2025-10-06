@@ -25,3 +25,14 @@ MIDDLEWARE_URL=https://where.my.middleware.is.running
 WEBHOOK_SECRET=a-very-secret-key
 BOT_SECRET=another-very-secret-key
 ----
+
+=== Run the Application
+
+Run the following command in a terminal window:
+
+[source,bash]
+----
+./gradlew bootRun
+----
+
+Your middleware application is running on port http://localhost:8080
