@@ -36,3 +36,16 @@ Run the following command in a terminal window:
 ----
 
 Your middleware application is running on port http://localhost:8080
+
+=== Useful conversation configurations
+
+You might need to configure the configuration templates to include your bot.
+
+Some useful settings:
+
+* `com.unblu.conversation.concierge.conciergeEnabled=false` to disable the concierge
+* Enable your external bot with one of:
+** `com.unblu.conversation.bot.enableAllExternalBots=true`
+** or `com.unblu.conversation.bot.mandatoryExternalBotIds`
+** or `com.unblu.conversation.bot.optionalExternalBotIds`
+* `com.unblu.conversation.message.allowChatDuringOnboarding=CONTEXT_PERSON` to give to the visitor the possibility to enter messages during onboarding
