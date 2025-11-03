@@ -13,5 +13,7 @@ unblu:
       firstName: Test
       lastName: Bot
       sourceId: Test middleware
+    clean-previous: true
   webhook:
     secret: ${WEBHOOK_SECRET}
+    clean-previous: true
