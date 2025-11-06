@@ -16,8 +16,13 @@ java {
 }
 
 repositories {
+    maven {
+        url "https://jitpack.io"
+        content {
+            includeGroup "com.github.unblu"
+        }
+    }
     mavenCentral()
-    mavenLocal()
 }
 
 wrapper {
@@ -27,7 +32,7 @@ wrapper {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
-    implementation 'com.unblu.middleware:unblu-middleware-lib:1.8.0'
+    implementation 'com.github.unblu:unblu-middleware-lib:e8f15d5ef47da08724d806d5be5e08f18728095c'
     implementation 'com.unblu.openapi:jersey3-client-v4:8.24.0'
     implementation 'org.projectlombok:lombok:1.18.34'
     annotationProcessor 'org.projectlombok:lombok:1.18.34'
