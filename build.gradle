@@ -17,7 +17,7 @@ java {
 
 repositories {
     mavenCentral()
-    mavenLocal()
+    // mavenLocal()
 }
 
 wrapper {
