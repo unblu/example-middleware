@@ -4,7 +4,8 @@ import com.unblu.middleware.bots.annotation.UnbluBots;
 import com.unblu.middleware.bots.service.DialogBotService;
 import com.unblu.middleware.common.entity.ContextSpec;
 import com.unblu.middleware.webhooks.annotation.UnbluWebhooks;
-import com.unblu.middleware.webhooks.service.WebhookHandlerService;
+import com.unblu.middleware.webhooks.entity.WebhookHandlerOptions;
+import com.unblu.middleware.webhooks.service.WebhookHandler;
 import com.unblu.webapi.jersey.v4.api.BotsApi;
 import com.unblu.webapi.jersey.v4.invoker.ApiException;
 import com.unblu.webapi.model.v4.*;
@@ -16,7 +17,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-import static com.unblu.middleware.common.registry.RequestOrderSpec.canIgnoreOrder;
 import static com.unblu.middleware.webhooks.entity.EventName.eventName;
 
 @Service
@@ -28,7 +28,7 @@ import static com.unblu.middleware.webhooks.entity.EventName.eventName;
 })
 public class TestMiddlewareService implements ApplicationRunner {
 
-    private final WebhookHandlerService webhookHandlerService;
+    private final WebhookHandler webhookHandler;
     private final DialogBotService dialogBotService;
     private final BotsApi botsApi;
 
@@ -36,23 +36,23 @@ public class TestMiddlewareService implements ApplicationRunner {
     public void run(ApplicationArguments args) {
         // accept every onboarding offer
         dialogBotService.acceptOnboardingOfferIf(_o -> Mono.just(true)
-                        .doOnNext(_r -> log.info("Accepting as usual")));
+                .doOnNext(_r -> log.info("Accepting as usual")));
 
         // greet the user when a dialog is opened
         dialogBotService.onDialogOpen(r ->
-                        Mono.fromRunnable(() -> sendMessage(r.getDialogToken(), "Hello, I am a bot!")));
+                Mono.fromRunnable(() -> sendMessage(r.getDialogToken(), "Hello, I am a bot!")));
 
         // echo every message back to the user
         dialogBotService.onDialogMessage(r ->
-                        Mono.fromRunnable(() -> echoIfSentByVisitor(r)));
+                Mono.fromRunnable(() -> echoIfSentByVisitor(r)));
 
         // log every message sent anywhere using a webhook handler
-        webhookHandlerService.onWebhook(eventName("conversation.new_message"), ConversationNewMessageEvent.class,
+        webhookHandler.onWebhook(eventName("conversation.new_message"), ConversationNewMessageEvent.class,
                 e -> Mono.fromRunnable(() -> log.info("Message received: {}", e.getConversationMessage().getFallbackText())),
-                canIgnoreOrder(),
-                ContextSpec.of(
-                        "conversationId", it -> it.getConversationMessage().getConversationId()
-                ));
+                WebhookHandlerOptions.contextSpec(
+                        ContextSpec.of(
+                                "conversationId", it -> it.getConversationMessage().getConversationId()
+                        )));
     }
 
     private void echoIfSentByVisitor(BotDialogMessageRequest r) {
