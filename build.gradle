@@ -36,4 +36,11 @@ dependencies {
     implementation 'ch.qos.logback.contrib:logback-json-classic:0.1.5'
     implementation 'ch.qos.logback.contrib:logback-jackson:0.1.5'
     implementation 'net.logstash.logback:logstash-logback-encoder:7.3'
+
+    // work-around needed if version < 8.28.0 of 'com.unblu.openapi:jersey3-client-v4' is used: 
+    constraints {
+        implementation('org.glassfish.jersey.core:jersey-client:3.1.11') {
+            because('Because of CVE-2025-12383')
+        }
+    }
 }
