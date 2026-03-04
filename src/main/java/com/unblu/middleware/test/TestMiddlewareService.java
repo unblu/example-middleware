@@ -1,9 +1,7 @@
 package com.unblu.middleware.test;
 
-import com.unblu.middleware.bots.annotation.UnbluDialogBot;
 import com.unblu.middleware.bots.service.DialogBot;
 import com.unblu.middleware.common.entity.ContextSpec;
-import com.unblu.middleware.webhooks.annotation.UnbluWebhooks;
 import com.unblu.middleware.webhooks.entity.WebhookHandlerOptions;
 import com.unblu.middleware.webhooks.service.WebhookHandler;
 import com.unblu.webapi.jersey.v4.api.BotsApi;
@@ -13,19 +11,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
 
 import static com.unblu.middleware.webhooks.entity.EventName.eventName;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
-@Import({
-        UnbluDialogBot.class,
-        UnbluWebhooks.class
-})
 public class TestMiddlewareService implements ApplicationRunner {
 
     private final WebhookHandler webhookHandler;
