@@ -1,7 +1,7 @@
 package com.unblu.middleware.test;
 
-import com.unblu.middleware.bots.annotation.UnbluBots;
-import com.unblu.middleware.bots.service.DialogBotService;
+import com.unblu.middleware.bots.annotation.UnbluDialogBot;
+import com.unblu.middleware.bots.service.DialogBot;
 import com.unblu.middleware.common.entity.ContextSpec;
 import com.unblu.middleware.webhooks.annotation.UnbluWebhooks;
 import com.unblu.middleware.webhooks.entity.WebhookHandlerOptions;
@@ -23,32 +23,29 @@ import static com.unblu.middleware.webhooks.entity.EventName.eventName;
 @Slf4j
 @RequiredArgsConstructor
 @Import({
-        UnbluBots.class,
+        UnbluDialogBot.class,
         UnbluWebhooks.class
 })
 public class TestMiddlewareService implements ApplicationRunner {
 
     private final WebhookHandler webhookHandler;
-    private final DialogBotService dialogBotService;
+    private final DialogBot dialogBot;
     private final BotsApi botsApi;
 
     @Override
     public void run(ApplicationArguments args) {
         // accept every onboarding offer
-        dialogBotService.acceptOnboardingOfferIf(_o -> Mono.just(true)
-                .doOnNext(_r -> log.info("Accepting as usual")));
+        dialogBot.acceptOnboardingOfferIf(_o -> true);
 
         // greet the user when a dialog is opened
-        dialogBotService.onDialogOpen(r ->
-                Mono.fromRunnable(() -> sendMessage(r.getDialogToken(), "Hello, I am a bot!")));
+        dialogBot.onDialogOpen(r -> sendMessage(r.getDialogToken(), "Hello, I am a bot!"));
 
         // echo every message back to the user
-        dialogBotService.onDialogMessage(r ->
-                Mono.fromRunnable(() -> echoIfSentByVisitor(r)));
+        dialogBot.onDialogMessage(this::echoIfSentByVisitor);
 
         // log every message sent anywhere using a webhook handler
-        webhookHandler.onWebhook(eventName("conversation.new_message"), ConversationNewMessageEvent.class,
-                e -> Mono.fromRunnable(() -> log.info("Message received: {}", e.getConversationMessage().getFallbackText())),
+        webhookHandler.on(eventName("conversation.new_message"), ConversationNewMessageEvent.class,
+                e -> log.info("Message received: {}", e.getConversationMessage().getFallbackText()),
                 WebhookHandlerOptions.contextSpec(
                         ContextSpec.of(
                                 "conversationId", it -> it.getConversationMessage().getConversationId()

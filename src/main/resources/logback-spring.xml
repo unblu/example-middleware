@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <!-- JSON Console Appender for Production -->
+    <appender name="JSON_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
             <providers>
                 <pattern>
@@ -11,15 +12,21 @@
         </encoder>
     </appender>
 
-    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
-    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+    <!-- Standard Console Appender for Development -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
 
     <root level="info">
         <springProfile name="production">
-            <appender-ref ref="STDOUT"/>
+            <appender-ref ref="JSON_CONSOLE"/>
         </springProfile>
         <springProfile name="!production">
             <appender-ref ref="CONSOLE"/>
         </springProfile>
+        <!-- Default appender when no profile is active -->
+        <appender-ref ref="CONSOLE"/>
     </root>
 </configuration>
