@@ -17,10 +17,9 @@ java {
 
 repositories {
     mavenCentral()
-    mavenLocal()
 }
 
-def unbluMiddlewareVersion = '2.0.0-SNAPSHOT'
+def unbluMiddlewareVersion = '2.0.0'
 
 wrapper {
     distributionType = Wrapper.DistributionType.ALL
