@@ -1,8 +1,8 @@
 plugins {
     id 'java'
     id 'application'
-    id 'org.springframework.boot' version '3.4.4'
-    id 'io.spring.dependency-management' version '1.1.6'
+    id 'org.springframework.boot' version '4.0.2'
+    id 'io.spring.dependency-management' version '1.1.7'
 }
 
 mainClassName = 'com.unblu.middleware.test.App'
@@ -17,8 +17,9 @@ java {
 
 repositories {
     mavenCentral()
-    // mavenLocal()
 }
+
+def unbluMiddlewareVersion = '2.0.0'
 
 wrapper {
     distributionType = Wrapper.DistributionType.ALL
@@ -27,7 +28,9 @@ wrapper {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
-    implementation 'com.unblu.middleware:unblu-middleware-lib:1.9.3'
+    implementation platform("com.unblu.middleware:unblu-middleware-lib-bom:${unbluMiddlewareVersion}")
+    implementation 'com.unblu.middleware:unblu-middleware-lib-spring-webhooks'
+    implementation 'com.unblu.middleware:unblu-middleware-lib-spring-dialog-bot'
     implementation 'com.unblu.openapi:jersey3-client-v4:8.26.2'
     implementation 'org.projectlombok:lombok:1.18.34'
     annotationProcessor 'org.projectlombok:lombok:1.18.34'
